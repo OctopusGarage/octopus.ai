@@ -1,0 +1,1368 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>octopus.ai — The ultimate one-person company</title>
+  <meta name="description" content="Turn your expertise into a private Skill matrix and MCP moat. Build your digital twin. Stop trading time for money — start deploying your intellectual property." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ['"DM Serif Display"', 'Georgia', 'serif'],
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg: #050b14;
+      --teal: #14b8a6;
+      --cyan: #06b6d4;
+      --orange: #fb923c;
+    }
+
+    body { background: var(--bg); }
+
+    /* Noise overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.04;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* Accent strip */
+    .accent-strip {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #14b8a6 20%, #fb923c 50%, #06b6d4 80%, transparent);
+      opacity: 0.6;
+    }
+
+    /* Mesh orbs */
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(100px);
+      pointer-events: none;
+    }
+
+    /* Display headline */
+    .display-headline {
+      font-family: 'DM Serif Display', Georgia, serif;
+      font-weight: 400;
+      line-height: 1.0;
+      letter-spacing: -0.01em;
+    }
+
+    .gradient-text {
+      background: linear-gradient(135deg, #2dd4bf 0%, #22d3ee 35%, #38bdf8 70%, #fb923c 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .gradient-text-warm {
+      background: linear-gradient(135deg, #fb923c 0%, #f97316 50%, #2dd4bf 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* Glass card */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      transition: all 0.25s ease;
+    }
+    .glass-card:hover {
+      background: rgba(255, 255, 255, 0.035);
+      border-color: rgba(255, 255, 255, 0.12);
+      transform: translateY(-2px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+    }
+
+    /* Subtle border card */
+    .grad-border {
+      position: relative;
+      background: rgba(8, 16, 28, 0.6);
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    /* Mockup dashboard */
+    .mockup-dash {
+      background: linear-gradient(180deg, rgba(8, 18, 30, 0.98), rgba(5, 12, 22, 0.98));
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 24px;
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.02),
+        0 50px 120px rgba(0,0,0,0.6),
+        inset 0 1px 0 rgba(255,255,255,0.04);
+    }
+
+    /* Nav float */
+    .nav-float {
+      position: fixed;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 50;
+      background: rgba(8, 16, 28, 0.75);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 999px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+    }
+
+    /* Fade in */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+    .fade-in-delay-1 { transition-delay: 0.1s; }
+    .fade-in-delay-2 { transition-delay: 0.2s; }
+    .fade-in-delay-3 { transition-delay: 0.3s; }
+
+    /* CTA button */
+    .cta-btn {
+      background: rgba(20, 184, 166, 0.12);
+      border: 1px solid rgba(20, 184, 166, 0.45);
+      box-shadow: 0 0 20px rgba(20,184,166,0.15), inset 0 1px 0 rgba(255,255,255,0.06);
+      transition: all 0.3s ease;
+    }
+    .cta-btn:hover {
+      background: rgba(20, 184, 166, 0.22);
+      border-color: rgba(20, 184, 166, 0.7);
+      box-shadow: 0 0 40px rgba(20,184,166,0.3), inset 0 1px 0 rgba(255,255,255,0.1);
+      transform: translateY(-1px);
+    }
+
+    .secondary-btn {
+      border: 1px solid rgba(255,255,255,0.1);
+      transition: all 0.3s ease;
+    }
+    .secondary-btn:hover {
+      border-color: rgba(20,184,166,0.4);
+      background: rgba(20,184,166,0.08);
+      transform: translateY(-1px);
+    }
+
+    /* Typing cursor */
+    .typing-cursor::after {
+      content: '|';
+      animation: blink 1s step-end infinite;
+      color: #14b8a6;
+    }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+    /* Result lines */
+    .result-line {
+      opacity: 0;
+      transform: translateX(-10px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .result-line.show { opacity: 1; transform: translateX(0); }
+
+    /* Section label */
+    .section-label {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.5);
+      padding: 4px 10px;
+      border-radius: 6px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    /* Use case tabs */
+    .uc-tab {
+      color: rgba(255,255,255,0.5);
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.02);
+      cursor: pointer;
+      font-size: 13px;
+      padding: 8px 16px;
+      border-radius: 8px;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .uc-tab:hover {
+      color: rgba(255,255,255,0.9);
+      border-color: rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.06);
+    }
+    .uc-tab-active {
+      color: #fff !important;
+      background: rgba(20,184,166,0.2) !important;
+      border-color: rgba(20,184,166,0.5) !important;
+    }
+    .uc-panel { animation: fadeInUp 0.35s ease; }
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* Feature icon */
+    .feat-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, rgba(20,184,166,0.15), rgba(6,182,212,0.1));
+      border: 1px solid rgba(20,184,166,0.2);
+      margin-bottom: 18px;
+    }
+
+    /* Comparison table */
+    .check-yes { color: #34d399; font-size: 15px; }
+    .check-no { color: rgba(255,255,255,0.15); font-size: 13px; }
+
+    /* Grid bg subtle */
+    .grid-bg {
+      background-image:
+        radial-gradient(circle, rgba(20,184,166,0.08) 1px, transparent 1px);
+      background-size: 32px 32px;
+    }
+
+    /* Source dot */
+    .src-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    #graph-canvas, #mini-graph {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+<body class="text-gray-100 font-sans antialiased overflow-x-hidden">
+
+  <!-- Accent strip -->
+  <div class="accent-strip fixed top-0 inset-x-0 z-[60]"></div>
+
+  <!-- Nav -->
+  <nav class="nav-float">
+    <div class="px-2 py-2 flex items-center gap-4">
+      <div class="flex items-center gap-2.5">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="3" fill="#14b8a6"/>
+          <path d="M12 15c0 2.5-1.5 4.5-4 5" stroke="#14b8a6" stroke-width="1.8" stroke-linecap="round" opacity="0.85"/>
+          <path d="M12 15c0 2.5 1.5 4.5 4 5" stroke="#06b6d4" stroke-width="1.8" stroke-linecap="round" opacity="0.85"/>
+          <path d="M12 9c0-2.5-1.5-4.5-4-5" stroke="#14b8a6" stroke-width="1.8" stroke-linecap="round" opacity="0.85"/>
+          <path d="M12 9c0-2.5 1.5-4.5 4-5" stroke="#06b6d4" stroke-width="1.8" stroke-linecap="round" opacity="0.85"/>
+        </svg>
+        <span class="font-display text-2xl gradient-text" style="font-weight:400;letter-spacing:-0.04em;">octopus.ai</span>
+      </div>
+      <div class="hidden md:flex items-center gap-2 text-sm text-gray-500">
+        <a href="#how" class="px-3 py-1.5 rounded-lg hover:text-white hover:bg-white/5 transition-colors duration-200">How it works</a>
+        <a href="#features" class="px-3 py-1.5 rounded-lg hover:text-white hover:bg-white/5 transition-colors duration-200">Features</a>
+        <a href="#privacy" class="px-3 py-1.5 rounded-lg hover:text-white hover:bg-white/5 transition-colors duration-200">Privacy</a>
+      </div>
+      <a href="#waitlist" class="cta-btn text-sm text-white px-4 py-2 rounded-lg font-medium">
+        Get access
+      </a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="relative min-h-screen flex items-center pt-24 overflow-hidden grid-bg">
+
+    <!-- Background canvas -->
+    <canvas id="graph-canvas"></canvas>
+
+    <!-- Orbs -->
+    <div class="orb w-[800px] h-[800px] bg-teal-600/12" style="top:-25%;left:-20%;"></div>
+    <div class="orb w-[600px] h-[600px] bg-cyan-500/8" style="bottom:-15%;right:-15%;"></div>
+    <div class="orb w-[400px] h-[400px] bg-orange-500/8" style="top:45%;right:15%;"></div>
+    <div class="orb w-[350px] h-[350px] bg-indigo-500/8" style="top:20%;left:55%;"></div>
+
+    <div class="relative max-w-6xl mx-auto px-6 py-28 w-full">
+      <div class="grid lg:grid-cols-2 gap-14 items-center">
+
+        <!-- Copy -->
+        <div>
+          <div class="inline-flex items-center gap-2 text-xs font-medium px-3 py-1.5 rounded-full mb-10"
+            style="background:rgba(20,184,166,0.1);border:1px solid rgba(20,184,166,0.25);color:#2dd4bf;">
+            <span class="w-1.5 h-1.5 rounded-full animate-pulse" style="background:#14b8a6;"></span>
+            The ultimate one-person company
+          </div>
+
+          <h1 class="display-headline text-[56px] md:text-[72px] text-white mb-8">
+            Stop selling<br/>
+            your time.<br/>
+            <em class="gradient-text not-italic">Deploy your Skills.</em>
+          </h1>
+
+          <p class="text-lg text-gray-400 mb-10 leading-relaxed max-w-md font-light">
+            Turn your expertise into a private Skill matrix and MCP moat. Build a digital twin that works while you sleep. Your IP, your infrastructure, your revenue.
+          </p>
+
+          <div class="flex flex-col sm:flex-row gap-3">
+            <a href="#waitlist" class="cta-btn text-white px-8 py-4 rounded-2xl font-medium text-center text-sm">
+              Start building free
+            </a>
+            <a href="#how" class="secondary-btn text-gray-400 hover:text-white px-8 py-4 rounded-2xl font-medium text-center text-sm">
+              See how it works
+            </a>
+          </div>
+
+          <p class="mt-8 text-xs" style="color:rgba(255,255,255,0.5);">Self-hosted &middot; MCP-native &middot; Own your IP &middot; Scale without hiring</p>
+        </div>
+
+        <!-- Mockup -->
+        <div class="mockup-dash overflow-hidden">
+          <!-- Top bar -->
+          <div class="flex items-center justify-between px-4 py-2" style="background:rgba(255,255,255,0.02);border-bottom:1px solid rgba(255,255,255,0.05);">
+            <div class="flex items-center gap-2">
+              <div class="w-1.5 h-1.5 rounded-full" style="background:#22c55e;"></div>
+              <span class="text-[11px] font-medium" style="color:rgba(255,255,255,0.5);">twin shell — live</span>
+            </div>
+            <span class="text-[10px] font-mono" style="color:rgba(255,255,255,0.2);">v0.4.2</span>
+          </div>
+
+          <div class="flex" style="height:430px;">
+
+            <!-- Sidebar -->
+            <div class="border-r flex-shrink-0 p-3 overflow-hidden" style="width:160px;border-color:rgba(255,255,255,0.05);">
+              <p class="px-2 mb-3" style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.2);">Inputs</p>
+              <div class="space-y-0.5">
+                <div class="flex items-center gap-2 px-2 py-1.5 rounded-lg text-xs" style="background:rgba(20,184,166,0.15);color:#2dd4bf;">
+                  <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.5"/><path d="M6 1C6 1 4 3.5 4 6s2 5 2 5" stroke="currentColor" stroke-width="1"/><path d="M1 6h10" stroke="currentColor" stroke-width="1"/></svg>
+                  Browser history
+                </div>
+                <div class="flex items-center gap-2 px-2 py-1.5 rounded-lg text-xs cursor-pointer" style="color:rgba(255,255,255,0.25);">
+                  <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><rect x="1" y="2" width="10" height="8" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M4 5h4M4 7h2" stroke="currentColor" stroke-width="1"/></svg>
+                  Call transcripts
+                </div>
+                <div class="flex items-center gap-2 px-2 py-1.5 rounded-lg text-xs cursor-pointer" style="color:rgba(255,255,255,0.25);">
+                  <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><rect x="2" y="1" width="8" height="10" rx="1" stroke="currentColor" stroke-width="1.5"/><path d="M4 4h4M4 6h4M4 8h2" stroke="currentColor" stroke-width="1"/></svg>
+                  Local files
+                </div>
+                <div class="flex items-center gap-2 px-2 py-1.5 rounded-lg text-xs cursor-pointer" style="color:rgba(255,255,255,0.25);">
+                  <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><rect x="1" y="1" width="10" height="10" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M3 4l2 2-2 2M7 8h2" stroke="currentColor" stroke-width="1" stroke-linecap="round"/></svg>
+                  Git repos
+                </div>
+                <div class="flex items-center gap-2 px-2 py-1.5 rounded-lg text-xs cursor-pointer" style="color:rgba(255,255,255,0.25);">
+                  <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><rect x="1" y="2" width="10" height="8" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M1 5h10" stroke="currentColor" stroke-width="1"/><circle cx="3.5" cy="3.5" r="0.5" fill="currentColor"/></svg>
+                  Notion / Docs
+                </div>
+                <div class="flex items-center gap-2 px-2 py-1.5 rounded-lg text-xs cursor-pointer" style="color:rgba(255,255,255,0.25);">
+                  <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="4.5" stroke="currentColor" stroke-width="1.5"/><path d="M3.5 6h5M6 3.5v5" stroke="currentColor" stroke-width="1"/></svg>
+                  MCP servers
+                </div>
+              </div>
+
+              <div class="mt-5 pt-4" style="border-top:1px solid rgba(255,255,255,0.05);">
+                <p class="px-2 mb-3" style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.2);">Live Skills</p>
+                <div class="space-y-2.5 px-2">
+                  <div class="flex items-center gap-1.5 text-xs" style="color:rgba(255,255,255,0.25);">
+                    <span class="src-dot" style="background:#14b8a6;"></span>
+                    <span class="truncate">due-diligence-skill</span>
+                  </div>
+                  <div class="flex items-center gap-1.5 text-xs" style="color:rgba(255,255,255,0.25);">
+                    <span class="src-dot" style="background:#2dd4bf;"></span>
+                    <span class="truncate">code-review-mcp</span>
+                  </div>
+                  <div class="flex items-center gap-1.5 text-xs" style="color:rgba(255,255,255,0.25);">
+                    <span class="src-dot" style="background:#22c55e;"></span>
+                    <span class="truncate">proposal-writer</span>
+                  </div>
+                  <div class="flex items-center gap-1.5 text-xs" style="color:rgba(255,255,255,0.25);">
+                    <span class="src-dot" style="background:#fb923c;"></span>
+                    <span class="truncate">compliance-checker</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Main -->
+            <div class="flex-1 flex flex-col min-w-0">
+
+              <!-- Query bar -->
+              <div class="p-3" style="border-bottom:1px solid rgba(255,255,255,0.05);">
+                <div class="flex items-center gap-2 px-3 py-2 rounded-lg" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);">
+                  <svg width="13" height="13" viewBox="0 0 14 14" fill="none" style="color:rgba(255,255,255,0.2);flex-shrink:0;">
+                    <circle cx="6" cy="6" r="4.5" stroke="currentColor" stroke-width="1.5"/>
+                    <path d="M9.5 9.5l2.5 2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                  </svg>
+                  <span id="query-text" class="text-xs font-mono typing-cursor" style="color:rgba(255,255,255,0.45);"></span>
+                </div>
+              </div>
+
+              <!-- Graph -->
+              <div class="relative overflow-hidden" style="height:200px;">
+                <canvas id="mini-graph"></canvas>
+              </div>
+
+              <!-- Results -->
+              <div class="p-4 border-t" style="border-color:rgba(255,255,255,0.06);background:rgba(5,11,20,0.95);">
+                <div id="results" class="space-y-2">
+                  <div class="result-line flex items-start gap-2">
+                    <span class="src-dot mt-1 flex-shrink-0" style="background:#2dd4bf;"></span>
+                    <span class="text-xs" style="color:rgba(255,255,255,0.45);">Skill "due-diligence" triggered from meeting notes</span>
+                  </div>
+                  <div class="result-line flex items-start gap-2">
+                    <span class="src-dot mt-1 flex-shrink-0" style="background:#22c55e;"></span>
+                    <span class="text-xs" style="color:rgba(255,255,255,0.45);">MCP connected to target company's SEC filings</span>
+                  </div>
+                  <div class="result-line flex items-start gap-2">
+                    <span class="src-dot mt-1 flex-shrink-0" style="background:#14b8a6;"></span>
+                    <span class="text-xs" style="color:rgba(255,255,255,0.45);">Your past 3 deal patterns applied as risk filters</span>
+                  </div>
+                  <div class="result-line flex items-start gap-2">
+                    <span class="src-dot mt-1 flex-shrink-0" style="background:#fb923c;"></span>
+                    <span class="text-xs" style="color:rgba(255,255,255,0.45);">Draft memo exported with your signature style</span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Capabilities -->
+  <section class="py-24 relative" style="background:radial-gradient(ellipse at 50% 0%, rgba(20,184,166,0.04), transparent 60%);">
+    <div class="max-w-5xl mx-auto px-6">
+      <div class="fade-in text-center mb-14">
+        <p class="section-label mb-4">Capabilities</p>
+        <h2 class="display-headline text-5xl text-white">Anything you do twice,<br/>your twin does forever.</h2>
+      </div>
+      <div class="grid md:grid-cols-3 gap-4 fade-in">
+
+        <div class="glass-card rounded-2xl p-6">
+          <p class="text-xs font-mono mb-3" style="color:rgba(20,184,166,0.8);">› Run a compliance check on this vendor using my framework</p>
+          <p class="text-sm font-light leading-relaxed" style="color:rgba(255,255,255,0.4);">Your Skill applies the exact checklist you developed over 50 engagements. Cross-references documents, flags risks, and outputs a report in your voice.</p>
+        </div>
+
+        <div class="glass-card rounded-2xl p-6">
+          <p class="text-xs font-mono mb-3" style="color:rgba(6,182,212,0.8);">› Write a proposal for the Acme project based on our last call</p>
+          <p class="text-sm font-light leading-relaxed" style="color:rgba(255,255,255,0.4);">Pulls the transcript, your previous winning proposals, and pricing psychology. Generates a draft that sounds like you at your best.</p>
+        </div>
+
+        <div class="glass-card rounded-2xl p-6">
+          <p class="text-xs font-mono mb-3" style="color:rgba(251,146,60,0.8);">› Review this Rust PR against my architectural rules</p>
+          <p class="text-sm font-light leading-relaxed" style="color:rgba(255,255,255,0.4);">Your code-review Skill scans for patterns you care about: error handling, concurrency safety, API design. Delivers feedback with examples from your own repos.</p>
+        </div>
+
+        <div class="glass-card rounded-2xl p-6">
+          <p class="text-xs font-mono mb-3" style="color:rgba(244,63,94,0.8);">› Summarise every mention of "governance" across my files this year</p>
+          <p class="text-sm font-light leading-relaxed" style="color:rgba(255,255,255,0.4);">Searches across PDFs, emails, notes, and meeting transcripts. Builds a timeline of how your thinking evolved — with direct citations.</p>
+        </div>
+
+        <div class="glass-card rounded-2xl p-6">
+          <p class="text-xs font-mono mb-3" style="color:rgba(45,212,191,0.8);">› Which of my Skills generated revenue this month?</p>
+          <p class="text-sm font-light leading-relaxed" style="color:rgba(255,255,255,0.4);">Tracks usage, subscription renewals, and API calls across your Skill matrix. Surfaces what's working and what's ready to retire.</p>
+        </div>
+
+        <div class="glass-card rounded-2xl p-6">
+          <p class="text-xs font-mono mb-3" style="color:rgba(34,197,94,0.8);">› Package my latest method into a new MCP server</p>
+          <p class="text-sm font-light leading-relaxed" style="color:rgba(255,255,255,0.4);">Takes your validated workflow and wraps it into a deployable MCP endpoint. Ready to sell, license, or plug into your clients' stacks.</p>
+        </div>
+
+      </div>
+      <div class="text-center mt-10 fade-in">
+        <a href="#waitlist" class="cta-btn text-white px-8 py-4 rounded-2xl font-medium text-sm inline-block">Build your twin free</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Professions -->
+  <section class="py-20 relative" style="background:linear-gradient(180deg, transparent, rgba(6,182,212,0.02) 50%, transparent);">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="fade-in text-center mb-12">
+        <p class="section-label mb-4">Who it's for</p>
+        <h2 class="display-headline text-5xl text-white">Built for solo operators<br/>who <em class="gradient-text not-italic">scale with code</em></h2>
+      </div>
+      <div class="grid md:grid-cols-2 gap-5 fade-in max-w-4xl mx-auto">
+
+        <div class="glass-card rounded-2xl p-6 relative overflow-hidden">
+          <div class="absolute top-0 left-0 right-0 h-0.5" style="background:linear-gradient(90deg,#2dd4bf,transparent);"></div>
+          <h3 class="font-medium text-white mb-1.5">Solo Consultants</h3>
+          <p class="text-xs font-light leading-relaxed" style="color:rgba(255,255,255,0.35);">Turn every engagement into a reusable Skill. Stop rewriting the same analysis from scratch.</p>
+        </div>
+
+        <div class="glass-card rounded-2xl p-6 relative overflow-hidden">
+          <div class="absolute top-0 left-0 right-0 h-0.5" style="background:linear-gradient(90deg,#22d3ee,transparent);"></div>
+          <h3 class="font-medium text-white mb-1.5">Indie Analysts</h3>
+          <p class="text-xs font-light leading-relaxed" style="color:rgba(255,255,255,0.35);">Package your models and frameworks into subscription Skills. Your IP, your pricing, your moat.</p>
+        </div>
+
+        <div class="glass-card rounded-2xl p-6 relative overflow-hidden">
+          <div class="absolute top-0 left-0 right-0 h-0.5" style="background:linear-gradient(90deg,#fb923c,transparent);"></div>
+          <h3 class="font-medium text-white mb-1.5">Deal Advisors</h3>
+          <p class="text-xs font-light leading-relaxed" style="color:rgba(255,255,255,0.35);">Due diligence checklists, term-sheet comparables, and risk flags — all encoded into private Skills.</p>
+        </div>
+
+        <div class="glass-card rounded-2xl p-6 relative overflow-hidden">
+          <div class="absolute top-0 left-0 right-0 h-0.5" style="background:linear-gradient(90deg,#a78bfa,transparent);"></div>
+          <h3 class="font-medium text-white mb-1.5">Product Builders</h3>
+          <p class="text-xs font-light leading-relaxed" style="color:rgba(255,255,255,0.35);">One person plus a Skill matrix equals a full product team. Design, code, and ship with your twin.</p>
+        </div>
+
+        <div class="glass-card rounded-2xl p-6 relative overflow-hidden">
+          <div class="absolute top-0 left-0 right-0 h-0.5" style="background:linear-gradient(90deg,#f472b6,transparent);"></div>
+          <h3 class="font-medium text-white mb-1.5">Clinical Specialists</h3>
+          <p class="text-xs font-light leading-relaxed" style="color:rgba(255,255,255,0.35);">Build diagnostic reasoning Skills from your case history. Kept local, fully under your control.</p>
+        </div>
+
+        <div class="glass-card rounded-2xl p-6 relative overflow-hidden">
+          <div class="absolute top-0 left-0 right-0 h-0.5" style="background:linear-gradient(90deg,#34d399,transparent);"></div>
+          <h3 class="font-medium text-white mb-1.5">Domain Experts</h3>
+          <p class="text-xs font-light leading-relaxed" style="color:rgba(255,255,255,0.35);">Decades of tacit knowledge, finally captured. Build Skills no generic AI can replicate.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- How it works -->
+  <section id="how" class="py-24 border-t" style="border-color:rgba(255,255,255,0.05);background:rgba(255,255,255,0.01);">
+    <div class="max-w-5xl mx-auto px-6">
+      <div class="fade-in text-center mb-16">
+        <p class="section-label mb-4">How it works</p>
+        <h2 class="display-headline text-5xl text-white">Three moves. Infinite leverage.</h2>
+      </div>
+
+      <div class="relative fade-in">
+        <!-- connecting line -->
+        <div class="hidden md:block absolute top-[26px] left-[16%] right-[16%] h-px" style="background:linear-gradient(90deg,transparent,rgba(20,184,166,0.4),rgba(6,182,212,0.4),rgba(251,146,60,0.4),transparent);"></div>
+
+        <div class="grid md:grid-cols-3 gap-8 relative">
+          <div class="text-center relative">
+            <div class="w-12 h-12 rounded-full mx-auto mb-5 flex items-center justify-center text-lg font-semibold" style="background:rgba(20,184,166,0.15);border:1px solid rgba(20,184,166,0.35);color:#2dd4bf;box-shadow:0 0 20px rgba(20,184,166,0.15);">1</div>
+            <h3 class="text-white font-medium mb-2">Capture</h3>
+            <p class="text-sm font-light" style="color:rgba(255,255,255,0.4);">Ingest code, docs, calls, and browser history. It all stays on your machine — nothing leaks.</p>
+          </div>
+          <div class="text-center relative">
+            <div class="w-12 h-12 rounded-full mx-auto mb-5 flex items-center justify-center text-lg font-semibold" style="background:rgba(6,182,212,0.15);border:1px solid rgba(6,182,212,0.35);color:#22d3ee;box-shadow:0 0 20px rgba(6,182,212,0.15);">2</div>
+            <h3 class="text-white font-medium mb-2">Encode</h3>
+            <p class="text-sm font-light" style="color:rgba(255,255,255,0.4);">We extract your frameworks, edge cases, and decision patterns — not just raw knowledge.</p>
+          </div>
+          <div class="text-center relative">
+            <div class="w-12 h-12 rounded-full mx-auto mb-5 flex items-center justify-center text-lg font-semibold" style="background:rgba(251,146,60,0.15);border:1px solid rgba(251,146,60,0.35);color:#fdba74;box-shadow:0 0 20px rgba(251,146,60,0.15);">3</div>
+            <h3 class="text-white font-medium mb-2">Deploy</h3>
+            <p class="text-sm font-light" style="color:rgba(255,255,255,0.4);">Ship as MCP servers, subscriptions, or a private twin that runs 24/7 under your control.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section id="features" class="py-24 relative" style="background:radial-gradient(ellipse at 80% 20%, rgba(251,146,60,0.03), transparent 50%), radial-gradient(ellipse at 20% 80%, rgba(20,184,166,0.03), transparent 50%);">
+    <div class="max-w-5xl mx-auto px-6">
+      <div class="fade-in text-center mb-14">
+        <p class="section-label mb-4">Features</p>
+        <h2 class="display-headline text-5xl text-white mb-4">The anatomy of a twin</h2>
+        <p class="text-base font-light" style="color:rgba(255,255,255,0.35);">Not a chatbot. A runtime that thinks, acts, and earns like you.</p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-4 fade-in">
+        <div class="glass-card rounded-2xl p-6">
+          <div class="w-10 h-10 rounded-xl flex items-center justify-center mb-4" style="background:linear-gradient(135deg,rgba(20,184,166,0.15),rgba(6,182,212,0.1));border:1px solid rgba(20,184,166,0.25);">
+            <svg width="20" height="20" fill="none" stroke="#2dd4bf" stroke-width="1.8" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+          </div>
+          <h3 class="text-lg text-white font-medium mb-2">Private Skill Matrix</h3>
+          <p class="text-sm font-light leading-relaxed mb-4" style="color:rgba(255,255,255,0.5);">Every Skill is distilled from your real work — not a generic prompt. Your frameworks become reusable, versioned assets.</p>
+          <div class="rounded-lg p-3" style="background:rgba(5,11,20,0.6);border:1px solid rgba(255,255,255,0.05);">
+            <div class="space-y-2">
+              <div class="flex items-center gap-2 text-xs" style="color:rgba(255,255,255,0.6);"><span class="w-1.5 h-1.5 rounded-full" style="background:#2dd4bf;"></span> due-diligence <span class="ml-auto" style="color:rgba(255,255,255,0.25);">v3.2</span></div>
+              <div class="flex items-center gap-2 text-xs" style="color:rgba(255,255,255,0.6);"><span class="w-1.5 h-1.5 rounded-full" style="background:#22d3ee;"></span> proposal-writer <span class="ml-auto" style="color:rgba(255,255,255,0.25);">v1.8</span></div>
+              <div class="flex items-center gap-2 text-xs" style="color:rgba(255,255,255,0.6);"><span class="w-1.5 h-1.5 rounded-full" style="background:#fb923c;"></span> code-review-mcp <span class="ml-auto" style="color:rgba(255,255,255,0.25);">v2.0</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass-card rounded-2xl p-6">
+          <div class="w-10 h-10 rounded-xl flex items-center justify-center mb-4" style="background:linear-gradient(135deg,rgba(6,182,212,0.15),rgba(20,184,166,0.1));border:1px solid rgba(6,182,212,0.25);">
+            <svg width="20" height="20" fill="none" stroke="#22d3ee" stroke-width="1.8" viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          </div>
+          <h3 class="text-lg text-white font-medium mb-2">MCP-Native Export</h3>
+          <p class="text-sm font-light leading-relaxed mb-4" style="color:rgba(255,255,255,0.5);">Turn any Skill into a Model Context Protocol server in one click. Plug into Cursor, Claude, or client stacks.</p>
+          <div class="rounded-lg p-3 font-mono text-[10px] leading-relaxed" style="background:rgba(5,11,20,0.6);border:1px solid rgba(255,255,255,0.05);color:rgba(255,255,255,0.45);">
+            <div><span style="color:#22d3ee;">POST</span> /mcp/run</div>
+            <div class="pl-2">"skill": "due-diligence"</div>
+            <div class="pl-2">"context": [...]</div>
+          </div>
+        </div>
+
+        <div class="glass-card rounded-2xl p-6">
+          <div class="w-10 h-10 rounded-xl flex items-center justify-center mb-4" style="background:linear-gradient(135deg,rgba(251,146,60,0.15),rgba(244,63,94,0.1));border:1px solid rgba(251,146,60,0.25);">
+            <svg width="20" height="20" fill="none" stroke="#fdba74" stroke-width="1.8" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <h3 class="text-lg text-white font-medium mb-2">Local-First &amp; Deterministic</h3>
+          <p class="text-sm font-light leading-relaxed mb-4" style="color:rgba(255,255,255,0.5);">Your data lives on your hardware. No cloud leakage, no training on your content. Same result every time.</p>
+          <div class="rounded-lg p-3" style="background:rgba(5,11,20,0.6);border:1px solid rgba(255,255,255,0.05);">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-[10px] font-mono" style="color:rgba(255,255,255,0.3);">Status</span>
+              <span class="text-[10px] px-1.5 py-0.5 rounded" style="background:rgba(34,197,94,0.12);color:#34d399;">On-device</span>
+            </div>
+            <div class="h-1 rounded-full w-full mb-1.5" style="background:rgba(255,255,255,0.05);"><div class="h-1 rounded-full" style="width:100%;background:linear-gradient(90deg,#14b8a6,#06b6d4);"></div></div>
+            <div class="text-[10px]" style="color:rgba(255,255,255,0.3);">Data boundary locked</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Scenarios -->
+  <section class="py-24 relative" style="background:linear-gradient(180deg, rgba(5,11,20,0), rgba(20,184,166,0.02) 30%, rgba(5,11,20,0) 70%);">
+    <div class="max-w-5xl mx-auto px-6">
+      <div class="fade-in text-center mb-12">
+        <p class="section-label mb-4">Scenarios</p>
+        <h2 class="display-headline text-5xl text-white mb-4">How operators deploy their twins</h2>
+        <p class="text-base font-light" style="color:rgba(255,255,255,0.35);">Pick a role to see what octopus.ai unlocks.</p>
+      </div>
+
+      <!-- Tabs -->
+      <div class="fade-in flex flex-wrap justify-center gap-2 mb-10">
+        <button class="uc-tab uc-tab-active" data-idx="1" onclick="showUC(1)">Consultants</button>
+        <button class="uc-tab" data-idx="2" onclick="showUC(2)">Analysts</button>
+        <button class="uc-tab" data-idx="3" onclick="showUC(3)">Advisors</button>
+        <button class="uc-tab" data-idx="4" onclick="showUC(4)">Clinicians</button>
+        <button class="uc-tab" data-idx="5" onclick="showUC(5)">Founders</button>
+        <button class="uc-tab" data-idx="6" onclick="showUC(6)">Researchers</button>
+        <button class="uc-tab" data-idx="7" onclick="showUC(7)">Executives</button>
+        <button class="uc-tab" data-idx="8" onclick="showUC(8)">Experts</button>
+      </div>
+
+      <!-- Panels -->
+      <div class="fade-in">
+
+        <!-- 1: Consultants -->
+        <div class="uc-panel" data-idx="1">
+          <div class="grid md:grid-cols-2 gap-8 items-center">
+            <div>
+              <div class="flex items-center gap-3 mb-5">
+                <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style="background:rgba(20,184,166,0.12);border:1px solid rgba(20,184,166,0.2);">
+                  <svg width="18" height="18" fill="none" stroke="#2dd4bf" stroke-width="1.8" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+                </div>
+                <div>
+                  <p class="text-base font-medium text-white">Solo Consultants</p>
+                  <p class="text-xs" style="color:rgba(255,255,255,0.3);">Strategy, ops, and implementation advisors</p>
+                </div>
+              </div>
+              <p class="text-sm leading-relaxed mb-6" style="color:rgba(255,255,255,0.55);">You solve similar problems for different clients, but every engagement starts from scratch. octopus.ai turns your best frameworks into reusable Skills. A client asks for a market entry analysis? Your twin already knows your scoring model, your red flags, and your preferred narrative structure.</p>
+              <div class="space-y-2.5">
+                <div class="flex items-start gap-2.5"><div class="w-1 h-1 rounded-full mt-2 flex-shrink-0" style="background:#2dd4bf;"></div><p class="text-xs" style="color:rgba(255,255,255,0.4);">Encode diagnostic frameworks from past projects</p></div>
+                <div class="flex items-start gap-2.5"><div class="w-1 h-1 rounded-full mt-2 flex-shrink-0" style="background:#2dd4bf;"></div><p class="text-xs" style="color:rgba(255,255,255,0.4);">Generate first-draft deliverables in your voice</p></div>
+                <div class="flex items-start gap-2.5"><div class="w-1 h-1 rounded-full mt-2 flex-shrink-0" style="background:#2dd4bf;"></div><p class="text-xs" style="color:rgba(255,255,255,0.4);">Spot client contradictions using your historical pattern library</p></div>
+              </div>
+            </div>
+            <div class="grad-border p-5 rounded-xl" style="background:rgba(6,14,24,0.6);">
+              <p class="text-xs font-mono mb-4" style="color:rgba(255,255,255,0.2);">Query preview</p>
+              <p class="text-sm font-mono mb-5" style="color:#2dd4bf;">"Run my market-entry framework on the Acme vertical"</p>
+              <div class="space-y-2.5">
+                <div class="flex items-start gap-2"><span class="src-dot mt-1.5 flex-shrink-0" style="background:#2dd4bf;"></span><span class="text-xs" style="color:rgba(255,255,255,0.45);">Skill "market-entry-v3" loaded: 12 criteria, 3 red flags</span></div>
+                <div class="flex items-start gap-2"><span class="src-dot mt-1.5 flex-shrink-0" style="background:#22c55e;"></span><span class="text-xs" style="color:rgba(255,255,255,0.45);">Browser history: 4 competitor teardowns reviewed last month</span></div>
+                <div class="flex items-start gap-2"><span class="src-dot mt-1.5 flex-shrink-0" style="background:#14b8a6;"></span><span class="text-xs" style="color:rgba(255,255,255,0.45);">Meeting notes: client mentioned regulatory concern in Jan</span></div>
+                <div class="flex items-start gap-2"><span class="src-dot mt-1.5 flex-shrink-0" style="background:#fb923c;"></span><span class="text-xs" style="color:rgba(255,255,255,0.45);">Draft memo generated with your standard sections</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2: Analysts -->
+        <div class="uc-panel hidden" data-idx="2">
+          <div class="grid md:grid-cols-2 gap-8 items-center">
+            <div>
+              <div class="flex items-center gap-3 mb-5">
+                <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style="background:rgba(6,182,212,0.12);border:1px solid rgba(6,182,212,0.2);">
+                  <svg width="18" height="18" fill="none" stroke="#22d3ee" stroke-width="1.8" viewBox="0 0 24 24"><path d="M12 20v-6M6 20V10M18 20V4"/></svg>
+                </div>
+                <div>
+                  <p class="text-base font-medium text-white">Indie Analysts</p>
+                  <p class="text-xs" style="color:rgba(255,255,255,0.3);">Financial, market, and technical researchers</p>
+                </div>
+              </div>
+              <p class="text-sm leading-relaxed mb-6" style="color:rgba(255,255,255,0.55);">Your edge isn't raw data — it's your lens. octopus.ai captures your models, your heuristics, and your sources into Skills that subscribers can run. You sell the framework, not just the report.</p>
+              <div class="space-y-2.5">
+                <div class="flex items-start gap-2.5"><div class="w-1 h-1 rounded-full mt-2 flex-shrink-0" style="background:#22d3ee;"></div><p class="text-xs" style="color:rgba(255,255,255,0.4);">Package valuation models into repeatable Skills</p></div>
+                <div class="flex items-start gap-2.5"><div class="w-1 h-1 rounded-full mt-2 flex-shrink-0" style="background:#22d3ee;"></div><p class="text-xs" style="color:rgba(255,255,255,0.4);">Track how your theses evolve across quarters</p></div>
+                <div class="flex items-start gap-2.5"><div class="w-1 h-1 rounded-full mt-2 flex-shrink-0" style="background:#22d3ee;"></div><p class="text-xs" style="color:rgba(255,255,255,0.4);">Expose Skills as MCPs for integration into client tools</p></div>
+              </div>
+            </div>
+            <div class="grad-border p-5 rounded-xl" style="background:rgba(6,14,24,0.6);">
+              <p class="text-xs font-mono mb-4" style="color:rgba(255,255,255,0.2);">Query preview</p>
+              <p class="text-sm font-mono mb-5" style="color:#22d3ee;">"Apply my SaaS valuation lens to this cohort data"</p>
+              <div class="space-y-2.5">
+                <div class="flex items-start gap-2"><span class="src-dot mt-1.5 flex-shrink-0" style="background:#22d3ee;"></span><span class="text-xs" style="color:rgba(255,255,255,0.45);">Skill "saas-lens-v2" loaded: 6 metrics, 2 warning signals</span></div>
+                <div class="flex items-start gap-2"><span class="src-dot mt-1.5 flex-shrink-0" style="background:#22c55e;"></span><span class="text-xs" style="color:rgba(255,255,255,0.45);">Cohort CSV parsed: retention curve flagged at Month 6</span></div>
+                <div class="flex items-start gap-2"><span class="src-dot mt-1.5 flex-shrink-0" style="background:#14b8a6;"></span><span class="text-xs" style="color:rgba(255,255,255,0.45);">Historical note: similar pattern seen in 2023 report</span></div>
+                <div class="flex items-start gap-2"><span class="src-dot mt-1.5 flex-shrink-0" style="background:#fb923c;"></span><span class="text-xs" style="color:rgba(255,255,255,0.45);">Output: scored memo ready for subscriber delivery</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3: Advisors -->
+        <div class="uc-panel hidden" data-idx="3">
+          <div class="grid md:grid-cols-2 gap-8 items-center">
+            <div>
+              <div class="flex items-center gap-3 mb-5">
+                <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style="background:rgba(251,146,60,0.12);border:1px solid rgba(251,146,60,0.2);">
+                  <svg width="18" height="18" fill="none" stroke="#fdba74" stroke-width="1.8" viewBox="0 0 24 24"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                </div>
+                <div>
+                  <p class="text-base font-medium text-white">Deal Advisors</p>
+                  <p class="text-xs" style="color:rgba(255,255,255,0.3);">M&amp;A, legal, and transaction specialists</p>
+                </div>
+              </div>
+              <p class="text-sm leading-relaxed mb-6" style="color:rgba(255,255,255,0.55);">Every deal is a maze of documents, calls, and red flags. octopus.ai turns your hard-won checklists into automated Skills. Your twin scans NDAs, term sheets, and data rooms in minutes — using your judgment, not generic templates.</p>
+              <div class="space-y-2.5">
+                <div class="flex items-start gap-2.5"><div class="w-1 h-1 rounded-full mt-2 flex-shrink-0" style="background:#fdba74;"></div><p class="text-xs" style="color:rgba(255,255,255,0.4);">Encode due-diligence playbooks from past deals</p></div>
+                <div class="flex items-start gap-2.5"><div class="w-1 h-1 rounded-full mt-2 flex-shrink-0" style="background:#fdba74;"></div><p class="text-xs" style="color:rgba(255,255,255,0.4);">Auto-generate risk memos with deal-specific citations</p></div>
+                <div class="flex items-start gap-2.5"><div class="w-1 h-1 rounded-full mt-2 flex-shrink-0" style="background:#fdba74;"></div><p class="text-xs" style="color:rgba(255,255,255,0.4);">Query every mention of a clause across your deal history</p></div>
+              </div>
+            </div>
+            <div class="grad-border p-5 rounded-xl" style="background:rgba(6,14,24,0.6);">
+              <p class="text-xs font-mono mb-4" style="color:rgba(255,255,255,0.2);">Query preview</p>
+              <p class="text-sm font-mono mb-5" style="color:#fdba74;">"Run my DD playbook on this cap table and highlight red flags"</p>
+              <div class="space-y-2.5">
+                <div class="flex items-start gap-2"><span class="src-dot mt-1.5 flex-shrink-0" style="background:#fdba74;"></span><span class="text-xs" style="color:rgba(255,255,255,0.45);">Skill "dd-playbook-series-a" loaded: 23 checks</span></div>
+                <div class="flex items-start gap-2"><span class="src-dot mt-1.5 flex-shrink-0" style="background:#22c55e;"></span><span class="text-xs" style="color:rgba(255,255,255,0.45);">Cap table: founder vesting cliff shorter than standard</span></div>
+                <div class="flex items-start gap-2"><span class="src-dot mt-1.5 flex-shrink-0" style="background:#14b8a6;"></span><span class="text-xs" style="color:rgba(255,255,255,0.45);">Comparable deal (2022): similar structure caused downstream issue</span></div>
+                <div class="flex items-start gap-2"><span class="src-dot mt-1.5 flex-shrink-0" style="background:#fb923c;"></span><span class="text-xs" style="color:rgba(255,255,255,0.45);">Draft flag memo exported with your standard format</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4: Clinicians -->
+        <div class="uc-panel hidden" data-idx="4">
+          <div class="grid md:grid-cols-2 gap-8 items-center">
+            <div>
+              <div class="flex items-center gap-3 mb-5">
+                <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style="background:rgba(244,63,94,0.12);border:1px solid rgba(244,63,94,0.2);">
+                  <svg width="18" height="18" fill="none" stroke="#fb7185" stroke-width="1.8" viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                </div>
+                <div>
+                  <p class="text-base font-medium text-white">Clinical Specialists</p>
+                  <p class="text-xs" style="color:rgba(255,255,255,0.3);">Physicians, therapists, and diagnostic experts</p>
+                </div>
+              </div>
+              <p class="text-sm leading-relaxed mb-6" style="color:rgba(255,255,255,0.55);">Clinical expertise accumulates over thousands of cases. octopus.ai helps you capture that tacit knowledge into private, local Skills. Review patient histories, surface relevant literature, and track outcomes — all without data leaving your device.</p>
+              <div class="space-y-2.5">
+                <div class="flex items-start gap-2.5"><div class="w-1 h-1 rounded-full mt-2 flex-shrink-0" style="background:#fb7185;"></div><p class="text-xs" style="color:rgba(255,255,255,0.4);">Build diagnostic reasoning Skills from case libraries</p></div>
+                <div class="flex items-start gap-2.5"><div class="w-1 h-1 rounded-full mt-2 flex-shrink-0" style="background:#fb7185;"></div><p class="text-xs" style="color:rgba(255,255,255,0.4);">Link patient notes, lab results, and research papers</p></div>
+                <div class="flex items-start gap-2.5"><div class="w-1 h-1 rounded-full mt-2 flex-shrink-0" style="background:#fb7185;"></div><p class="text-xs" style="color:rgba(255,255,255,0.4);">Track treatment outcomes and protocol evolution</p></div>
+              </div>
+            </div>
+            <div class="grad-border p-5 rounded-xl" style="background:rgba(6,14,24,0.6);">
+              <p class="text-xs font-mono mb-4" style="color:rgba(255,255,255,0.2);">Query preview</p>
+              <p class="text-sm font-mono mb-5" style="color:#fb7185;">"Has this symptom pattern appeared in my case history before?"</p>
+              <div class="space-y-2.5">
+                <div class="flex items-start gap-2"><span class="src-dot mt-1.5 flex-shrink-0" style="background:#fb7185;"></span><span class="text-xs" style="color:rgba(255,255,255,0.45);">Skill "pattern-matcher-rheumatology" loaded</span></div>
+                <div class="flex items-start gap-2"><span class="src-dot mt-1.5 flex-shrink-0" style="background:#22c55e;"></span><span class="text-xs" style="color:rgba(255,255,255,0.45);">3 similar cases found (2021, 2023, 2024)</span></div>
+                <div class="flex items-start gap-2"><span class="src-dot mt-1.5 flex-shrink-0" style="background:#14b8a6;"></span><span class="text-xs" style="color:rgba(255,255,255,0.45);">Outcome data: 2 resolved with Protocol B, 1 required specialist referral</span></div>
+                <div class="flex items-start gap-2"><span class="src-dot mt-1.5 flex-shrink-0" style="background:#fb923c;"></span><span class="text-xs" style="color:rgba(255,255,255,0.45);">Recent paper match: new biomarker study (Mar 2025)</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5: Founders -->
+        <div class="uc-panel hidden" data-idx="5">
+          <div class="grid md:grid-cols-2 gap-8 items-center">
+            <div>
+              <div class="flex items-center gap-3 mb-5">
+                <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style="background:rgba(20,184,166,0.12);border:1px solid rgba(20,184,166,0.2);">
+                  <svg width="18" height="18" fill="none" stroke="#2dd4bf" stroke-width="1.8" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                </div>
+                <div>
+                  <p class="text-base font-medium text-white">Product Solopreneurs</p>
+                  <p class="text-xs" style="color:rgba(255,255,255,0.3);">Indie hackers and one-person builders</p>
+                </div>
+              </div>
+              <p class="text-sm leading-relaxed mb-6" style="color:rgba(255,255,255,0.55);">You are the entire company. octopus.ai lets you multiply yourself. Code review, copywriting, customer support, and competitive analysis — each handled by a Skill that runs in your style, at your standard.</p>
+              <div class="space-y-2.5">
+                <div class="flex items-start gap-2.5"><div class="w-1 h-1 rounded-full mt-2 flex-shrink-0" style="background:#2dd4bf;"></div><p class="text-xs" style="color:rgba(255,255,255,0.4);">Deploy a code-review Skill trained on your own PRs</p></div>
+                <div class="flex items-start gap-2.5"><div class="w-1 h-1 rounded-full mt-2 flex-shrink-0" style="background:#2dd4bf;"></div><p class="text-xs" style="color:rgba(255,255,255,0.4);">Generate changelog and docs from commit history</p></div>
+                <div class="flex items-start gap-2.5"><div class="w-1 h-1 rounded-full mt-2 flex-shrink-0" style="background:#2dd4bf;"></div><p class="text-xs" style="color:rgba(255,255,255,0.4);">Auto-respond to customer emails in your brand voice</p></div>
+              </div>
+            </div>
+            <div class="grad-border p-5 rounded-xl" style="background:rgba(6,14,24,0.6);">
+              <p class="text-xs font-mono mb-4" style="color:rgba(255,255,255,0.2);">Query preview</p>
+              <p class="text-sm font-mono mb-5" style="color:#2dd4bf;">"Review this landing page copy against my brand voice Skill"</p>
+              <div class="space-y-2.5">
+                <div class="flex items-start gap-2"><span class="src-dot mt-1.5 flex-shrink-0" style="background:#2dd4bf;"></span><span class="text-xs" style="color:rgba(255,255,255,0.45);">Skill "voice-v1" loaded: 47 examples, 3 banned phrases</span></div>
+                <div class="flex items-start gap-2"><span class="src-dot mt-1.5 flex-shrink-0" style="background:#22c55e;"></span><span class="text-xs" style="color:rgba(255,255,255,0.45);">Line 3: "leverage" flagged — not in your vocabulary</span></div>
+                <div class="flex items-start gap-2"><span class="src-dot mt-1.5 flex-shrink-0" style="background:#14b8a6;"></span><span class="text-xs" style="color:rgba(255,255,255,0.45);">Line 7: CTA strength matches top-converting variant</span></div>
+                <div class="flex items-start gap-2"><span class="src-dot mt-1.5 flex-shrink-0" style="background:#fb923c;"></span><span class="text-xs" style="color:rgba(255,255,255,0.45);">Revised draft exported with tracked suggestions</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 6: Researchers -->
+        <div class="uc-panel hidden" data-idx="6">
+          <div class="grid md:grid-cols-2 gap-8 items-center">
+            <div>
+              <div class="flex items-center gap-3 mb-5">
+                <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style="background:rgba(6,182,212,0.12);border:1px solid rgba(6,182,212,0.2);">
+                  <svg width="18" height="18" fill="none" stroke="#22d3ee" stroke-width="1.8" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                </div>
+                <div>
+                  <p class="text-base font-medium text-white">Researchers</p>
+                  <p class="text-xs" style="color:rgba(255,255,255,0.3);">Academics, scientists, and methodologists</p>
+                </div>
+              </div>
+              <p class="text-sm leading-relaxed mb-6" style="color:rgba(255,255,255,0.55);">Your methodology is your moat. octopus.ai lets you encode it into a reproducible Skill. Others can apply your analytical lens to their own datasets — through an MCP server you control, with terms you set.</p>
+              <div class="space-y-2.5">
+                <div class="flex items-start gap-2.5"><div class="w-1 h-1 rounded-full mt-2 flex-shrink-0" style="background:#22d3ee;"></div><p class="text-xs" style="color:rgba(255,255,255,0.4);">Capture experimental protocols and analytical pipelines</p></div>
+                <div class="flex items-start gap-2.5"><div class="w-1 h-1 rounded-full mt-2 flex-shrink-0" style="background:#22d3ee;"></div><p class="text-xs" style="color:rgba(255,255,255,0.4);">Expose methods as licensable MCP Skills</p></div>
+                <div class="flex items-start gap-2.5"><div class="w-1 h-1 rounded-full mt-2 flex-shrink-0" style="background:#22d3ee;"></div><p class="text-xs" style="color:rgba(255,255,255,0.4);">Trace the evolution of your ideas across drafts and talks</p></div>
+              </div>
+            </div>
+            <div class="grad-border p-5 rounded-xl" style="background:rgba(6,14,24,0.6);">
+              <p class="text-xs font-mono mb-4" style="color:rgba(255,255,255,0.2);">Query preview</p>
+              <p class="text-sm font-mono mb-5" style="color:#22d3ee;">"Apply my causal-inference checklist to this dataset"</p>
+              <div class="space-y-2.5">
+                <div class="flex items-start gap-2"><span class="src-dot mt-1.5 flex-shrink-0" style="background:#22d3ee;"></span><span class="text-xs" style="color:rgba(255,255,255,0.45);">Skill "causal-check-v4" loaded: 9 bias tests</span></div>
+                <div class="flex items-start gap-2"><span class="src-dot mt-1.5 flex-shrink-0" style="background:#22c55e;"></span><span class="text-xs" style="color:rgba(255,255,255,0.45);">Dataset: 2 confounders identified, 1 addressed</span></div>
+                <div class="flex items-start gap-2"><span class="src-dot mt-1.5 flex-shrink-0" style="background:#14b8a6;"></span><span class="text-xs" style="color:rgba(255,255,255,0.45);">Your 2023 paper: similar limitation discussed in appendix</span></div>
+                <div class="flex items-start gap-2"><span class="src-dot mt-1.5 flex-shrink-0" style="background:#fb923c;"></span><span class="text-xs" style="color:rgba(255,255,255,0.45);">Report generated with your standard notation</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 7: Executives -->
+        <div class="uc-panel hidden" data-idx="7">
+          <div class="grid md:grid-cols-2 gap-8 items-center">
+            <div>
+              <div class="flex items-center gap-3 mb-5">
+                <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style="background:rgba(251,146,60,0.12);border:1px solid rgba(251,146,60,0.2);">
+                  <svg width="18" height="18" fill="none" stroke="#fdba74" stroke-width="1.8" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                </div>
+                <div>
+                  <p class="text-base font-medium text-white">Fractional Executives</p>
+                  <p class="text-xs" style="color:rgba(255,255,255,0.3);">C-suite advisors and board members</p>
+                </div>
+              </div>
+              <p class="text-sm leading-relaxed mb-6" style="color:rgba(255,255,255,0.55);">Your value is strategic judgment, but your time is finite. octopus.ai lets you scale by encoding your frameworks into board-ready Skills. Every portfolio company gets the benefit of your thinking — without you on every call.</p>
+              <div class="space-y-2.5">
+                <div class="flex items-start gap-2.5"><div class="w-1 h-1 rounded-full mt-2 flex-shrink-0" style="background:#fdba74;"></div><p class="text-xs" style="color:rgba(255,255,255,0.4);">Encode board-presentation frameworks and red flags</p></div>
+                <div class="flex items-start gap-2.5"><div class="w-1 h-1 rounded-full mt-2 flex-shrink-0" style="background:#fdba74;"></div><p class="text-xs" style="color:rgba(255,255,255,0.4);">Track company performance against your mental models</p></div>
+                <div class="flex items-start gap-2.5"><div class="w-1 h-1 rounded-full mt-2 flex-shrink-0" style="background:#fdba74;"></div><p class="text-xs" style="color:rgba(255,255,255,0.4);">Deploy insights to multiple clients through private MCPs</p></div>
+              </div>
+            </div>
+            <div class="grad-border p-5 rounded-xl" style="background:rgba(6,14,24,0.6);">
+              <p class="text-xs font-mono mb-4" style="color:rgba(255,255,255,0.2);">Query preview</p>
+              <p class="text-sm font-mono mb-5" style="color:#fdba74;">"Run my go-to-market maturity assessment on this quarter's numbers"</p>
+              <div class="space-y-2.5">
+                <div class="flex items-start gap-2"><span class="src-dot mt-1.5 flex-shrink-0" style="background:#fdba74;"></span><span class="text-xs" style="color:rgba(255,255,255,0.45);">Skill "gtm-maturity-v2" loaded: 5 stages, 14 signals</span></div>
+                <div class="flex items-start gap-2"><span class="src-dot mt-1.5 flex-shrink-0" style="background:#22c55e;"></span><span class="text-xs" style="color:rgba(255,255,255,0.45);">Q2 data: sales cycle lengthening, CAC flat</span></div>
+                <div class="flex items-start gap-2"><span class="src-dot mt-1.5 flex-shrink-0" style="background:#14b8a6;"></span><span class="text-xs" style="color:rgba(255,255,255,0.45);">Historical pattern: similar companies stalled at Stage 3</span></div>
+                <div class="flex items-start gap-2"><span class="src-dot mt-1.5 flex-shrink-0" style="background:#fb923c;"></span><span class="text-xs" style="color:rgba(255,255,255,0.45);">Board memo drafted with recommended interventions</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 8: Experts -->
+        <div class="uc-panel hidden" data-idx="8">
+          <div class="grid md:grid-cols-2 gap-8 items-center">
+            <div>
+              <div class="flex items-center gap-3 mb-5">
+                <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style="background:rgba(167,139,250,0.12);border:1px solid rgba(167,139,250,0.2);">
+                  <svg width="18" height="18" fill="none" stroke="#a78bfa" stroke-width="1.8" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                </div>
+                <div>
+                  <p class="text-base font-medium text-white">Domain Experts</p>
+                  <p class="text-xs" style="color:rgba(255,255,255,0.3);">Niche specialists with decades of tacit knowledge</p>
+                </div>
+              </div>
+              <p class="text-sm leading-relaxed mb-6" style="color:rgba(255,255,255,0.55);">Generic AI can't replicate what you know. octopus.ai captures the nuance — the edge cases, the exceptions, the heuristics you developed over years. Turn that into a Skill that outlives any single engagement.</p>
+              <div class="space-y-2.5">
+                <div class="flex items-start gap-2.5"><div class="w-1 h-1 rounded-full mt-2 flex-shrink-0" style="background:#a78bfa;"></div><p class="text-xs" style="color:rgba(255,255,255,0.4);">Capture tacit rules that never made it into documentation</p></div>
+                <div class="flex items-start gap-2.5"><div class="w-1 h-1 rounded-full mt-2 flex-shrink-0" style="background:#a78bfa;"></div><p class="text-xs" style="color:rgba(255,255,255,0.4);">Build decision trees from your historical judgments</p></div>
+                <div class="flex items-start gap-2.5"><div class="w-1 h-1 rounded-full mt-2 flex-shrink-0" style="background:#a78bfa;"></div><p class="text-xs" style="color:rgba(255,255,255,0.4);">License your expertise without giving away the source</p></div>
+              </div>
+            </div>
+            <div class="grad-border p-5 rounded-xl" style="background:rgba(6,14,24,0.6);">
+              <p class="text-xs font-mono mb-4" style="color:rgba(255,255,255,0.2);">Query preview</p>
+              <p class="text-sm font-mono mb-5" style="color:#a78bfa;">"Evaluate this supplier against my 20-year risk model"</p>
+              <div class="space-y-2.5">
+                <div class="flex items-start gap-2"><span class="src-dot mt-1.5 flex-shrink-0" style="background:#a78bfa;"></span><span class="text-xs" style="color:rgba(255,255,255,0.45);">Skill "supplier-risk-legacy" loaded: 37 weighted factors</span></div>
+                <div class="flex items-start gap-2"><span class="src-dot mt-1.5 flex-shrink-0" style="background:#22c55e;"></span><span class="text-xs" style="color:rgba(255,255,255,0.45);">Supplier profile: 2 amber flags, 1 red flag on financials</span></div>
+                <div class="flex items-start gap-2"><span class="src-dot mt-1.5 flex-shrink-0" style="background:#06b6d4;"></span><span class="text-xs" style="color:rgba(255,255,255,0.45);">Comparable supplier (2019): same red flag, eventual default</span></div>
+                <div class="flex items-start gap-2"><span class="src-dot mt-1.5 flex-shrink-0" style="background:#fb923c;"></span><span class="text-xs" style="color:rgba(255,255,255,0.45);">Recommendation memo generated with probability scores</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /panels -->
+    </div>
+  </section>
+
+  <!-- vs -->
+  <section class="py-28 relative" style="background:radial-gradient(ellipse at 50% 50%, rgba(6,182,212,0.04), transparent 70%);">
+    <div class="max-w-4xl mx-auto px-6 fade-in">
+      <div class="text-center mb-14">
+        <p class="section-label mb-4">The difference</p>
+        <h2 class="display-headline text-5xl text-white mb-4">Skills, not prompts.</h2>
+        <p class="text-base font-light" style="color:rgba(255,255,255,0.35);">Generic AI gives you answers. We build a runtime that thinks, acts, and earns like you.</p>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-5">
+        <!-- Left: Generic AI -->
+        <div class="rounded-3xl p-8" style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:rgba(255,255,255,0.06);">
+              <svg width="16" height="16" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="9" x2="15" y2="15"/><line x1="15" y1="9" x2="9" y2="15"/></svg>
+            </div>
+            <p class="text-base font-medium" style="color:rgba(255,255,255,0.5);">Generic AI</p>
+          </div>
+          <ul class="space-y-4">
+            <li class="flex items-start gap-3 text-sm" style="color:rgba(255,255,255,0.35);"><span class="mt-1 w-1 h-1 rounded-full flex-shrink-0" style="background:rgba(255,255,255,0.2);"></span>Forgets context between sessions</li>
+            <li class="flex items-start gap-3 text-sm" style="color:rgba(255,255,255,0.35);"><span class="mt-1 w-1 h-1 rounded-full flex-shrink-0" style="background:rgba(255,255,255,0.2);"></span>No access to your files or history</li>
+            <li class="flex items-start gap-3 text-sm" style="color:rgba(255,255,255,0.35);"><span class="mt-1 w-1 h-1 rounded-full flex-shrink-0" style="background:rgba(255,255,255,0.2);"></span>Can't encode your frameworks</li>
+            <li class="flex items-start gap-3 text-sm" style="color:rgba(255,255,255,0.35);"><span class="mt-1 w-1 h-1 rounded-full flex-shrink-0" style="background:rgba(255,255,255,0.2);"></span>No way to monetise your expertise</li>
+            <li class="flex items-start gap-3 text-sm" style="color:rgba(255,255,255,0.35);"><span class="mt-1 w-1 h-1 rounded-full flex-shrink-0" style="background:rgba(255,255,255,0.2);"></span>Outputs vary every time</li>
+          </ul>
+        </div>
+
+        <!-- Right: octopus.ai -->
+        <div class="rounded-3xl p-8 relative overflow-hidden" style="background:rgba(20,184,166,0.04);border:1px solid rgba(20,184,166,0.2);">
+          <div class="absolute -top-10 -right-10 w-32 h-32 rounded-full opacity-20" style="background:radial-gradient(circle,rgba(20,184,166,0.6),transparent 70%);"></div>
+          <div class="flex items-center gap-3 mb-6 relative">
+            <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:rgba(20,184,166,0.15);">
+              <svg width="16" height="16" fill="none" stroke="#2dd4bf" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <p class="text-base font-medium gradient-text">octopus.ai</p>
+          </div>
+          <ul class="space-y-4 relative">
+            <li class="flex items-start gap-3 text-sm" style="color:rgba(255,255,255,0.75);"><span class="mt-1 w-1.5 h-1.5 rounded-full flex-shrink-0" style="background:#2dd4bf;"></span>Remembers your entire work history</li>
+            <li class="flex items-start gap-3 text-sm" style="color:rgba(255,255,255,0.75);"><span class="mt-1 w-1.5 h-1.5 rounded-full flex-shrink-0" style="background:#22d3ee;"></span>Reads your files, code, and meetings locally</li>
+            <li class="flex items-start gap-3 text-sm" style="color:rgba(255,255,255,0.75);"><span class="mt-1 w-1.5 h-1.5 rounded-full flex-shrink-0" style="background:#fb923c;"></span>Encodes your judgment into executable Skills</li>
+            <li class="flex items-start gap-3 text-sm" style="color:rgba(255,255,255,0.75);"><span class="mt-1 w-1.5 h-1.5 rounded-full flex-shrink-0" style="background:#a78bfa;"></span>Sell subscriptions or license as MCP servers</li>
+            <li class="flex items-start gap-3 text-sm" style="color:rgba(255,255,255,0.75);"><span class="mt-1 w-1.5 h-1.5 rounded-full flex-shrink-0" style="background:#34d399;"></span>Deterministic, gated execution every time</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Privacy -->
+  <section id="privacy" class="py-28 border-t" style="border-color:rgba(255,255,255,0.05);background:rgba(255,255,255,0.02);">
+    <div class="max-w-5xl mx-auto px-6">
+      <div class="text-center mb-12 fade-in">
+        <p class="section-label mb-4">Data sovereignty</p>
+        <h2 class="display-headline text-5xl text-white mb-5">Your machine is the server.</h2>
+        <p class="text-base font-light max-w-xl mx-auto" style="color:rgba(255,255,255,0.55);">We literally cannot see your data. It never leaves your device. Not for syncing, not for training, not for "analytics."</p>
+      </div>
+
+      <div class="fade-in rounded-3xl p-8 md:p-12 mb-8 relative overflow-hidden" style="background:linear-gradient(135deg,rgba(20,184,166,0.06),rgba(6,182,212,0.03));border:1px solid rgba(20,184,166,0.15);">
+        <div class="absolute -top-20 -right-20 w-64 h-64 rounded-full opacity-20" style="background:radial-gradient(circle,rgba(20,184,166,0.5),transparent 70%);"></div>
+        <div class="grid md:grid-cols-2 gap-10 items-center relative">
+          <div class="flex flex-col items-center md:items-start text-center md:text-left">
+            <div class="w-20 h-20 rounded-2xl flex items-center justify-center mb-5" style="background:rgba(20,184,166,0.12);border:1px solid rgba(20,184,166,0.25);">
+              <svg width="36" height="36" fill="none" stroke="#2dd4bf" stroke-width="1.6" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            </div>
+            <h3 class="text-2xl text-white font-medium mb-2">Zero-knowledge by design</h3>
+            <p class="text-sm font-light" style="color:rgba(255,255,255,0.45);">No cloud sync. No telemetry. No training on your content. Your device is the only node in the network.</p>
+          </div>
+          <div class="space-y-4">
+            <div class="flex items-center gap-4 p-4 rounded-xl" style="background:rgba(5,11,20,0.4);border:1px solid rgba(255,255,255,0.05);">
+              <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style="background:rgba(52,211,153,0.12);">
+                <svg width="16" height="16" fill="none" stroke="#34d399" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <div>
+                <p class="text-sm text-white font-medium">Everything stays local</p>
+                <p class="text-xs" style="color:rgba(255,255,255,0.35);">Documents, transcripts, code, and Skills never leave your disk.</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-4 p-4 rounded-xl" style="background:rgba(5,11,20,0.4);border:1px solid rgba(255,255,255,0.05);">
+              <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style="background:rgba(52,211,153,0.12);">
+                <svg width="16" height="16" fill="none" stroke="#34d399" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <div>
+                <p class="text-sm text-white font-medium">No model training on your data</p>
+                <p class="text-xs" style="color:rgba(255,255,255,0.35);">We don't ingest your content to improve models. Ever.</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-4 p-4 rounded-xl" style="background:rgba(5,11,20,0.4);border:1px solid rgba(255,255,255,0.05);">
+              <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style="background:rgba(52,211,153,0.12);">
+                <svg width="16" height="16" fill="none" stroke="#34d399" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <div>
+                <p class="text-sm text-white font-medium">Your Skills are your property</p>
+                <p class="text-xs" style="color:rgba(255,255,255,0.35);">Export, sell, license, or delete them at any time. No lock-in.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 fade-in">
+        <div class="flex items-center gap-4 p-5 rounded-2xl" style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);">
+          <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style="background:rgba(52,211,153,0.1);">
+            <svg width="18" height="18" fill="none" stroke="#34d399" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          </div>
+          <div>
+            <p class="text-sm font-medium text-white">On-device only</p>
+            <p class="text-xs" style="color:rgba(255,255,255,0.35);">Runs on your hardware.</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-4 p-5 rounded-2xl" style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);">
+          <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style="background:rgba(6,182,212,0.1);">
+            <svg width="18" height="18" fill="none" stroke="#22d3ee" stroke-width="1.8" viewBox="0 0 24 24"><line x1="1" y1="1" x2="23" y2="23"/><path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"/><path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"/><path d="M10.71 5.05A16 16 0 0 1 22.56 9"/><path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>
+          </div>
+          <div>
+            <p class="text-sm font-medium text-white">No cloud required</p>
+            <p class="text-xs" style="color:rgba(255,255,255,0.35);">No servers, no sync.</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-4 p-5 rounded-2xl" style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);">
+          <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style="background:rgba(20,184,166,0.1);">
+            <svg width="18" height="18" fill="none" stroke="#2dd4bf" stroke-width="1.8" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <div>
+            <p class="text-sm font-medium text-white">IP protection</p>
+            <p class="text-xs" style="color:rgba(255,255,255,0.35);">Your property, always.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Waitlist -->
+  <section id="waitlist" class="py-28 border-t grid-bg" style="border-color:rgba(255,255,255,0.05);">
+    <div class="max-w-5xl mx-auto px-6 fade-in">
+      <div class="grid md:grid-cols-2 gap-10 items-center">
+        <!-- Left copy -->
+        <div>
+          <p class="section-label mb-4">Early access</p>
+          <h2 class="display-headline text-5xl text-white mb-5">Build your twin before the crowd does.</h2>
+          <p class="text-base font-light mb-8" style="color:rgba(255,255,255,0.45);">We release invites in small waves. Reserve your spot and we'll ping you when the next wave opens.</p>
+
+          <div class="flex items-center gap-3">
+            <div class="flex -space-x-1.5">
+              <div class="w-6 h-6 rounded-full border-2" style="border-color:#050b14;background:#14b8a6;"></div>
+              <div class="w-6 h-6 rounded-full border-2" style="border-color:#050b14;background:#06b6d4;"></div>
+              <div class="w-6 h-6 rounded-full border-2" style="border-color:#050b14;background:#fb923c;"></div>
+              <div class="w-6 h-6 rounded-full border-2" style="border-color:#050b14;background:#2dd4bf;"></div>
+              <div class="w-6 h-6 rounded-full border-2" style="border-color:#050b14;background:#a78bfa;"></div>
+            </div>
+            <p class="text-sm font-light" style="color:rgba(255,255,255,0.35);">Join <span style="color:rgba(255,255,255,0.65);">hundreds of others</span> on the list</p>
+          </div>
+        </div>
+
+        <!-- Right form card -->
+        <div class="glass-card rounded-3xl p-8">
+          <form action="https://formspree.io/f/YOUR_FORM_ID" method="POST" class="space-y-4" onsubmit="handleSubmit(event)">
+            <input type="hidden" name="_subject" value="New octopus.ai waitlist signup" />
+            <div>
+              <label class="block text-xs font-medium mb-2" style="color:rgba(255,255,255,0.5);">Email address</label>
+              <input
+                type="email"
+                name="email"
+                placeholder="your@email.com"
+                required
+                class="w-full text-sm px-4 py-3.5 rounded-xl text-white placeholder-gray-700 focus:outline-none transition-colors"
+                style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);"/>
+            </div>
+            <div>
+              <label class="block text-xs font-medium mb-2" style="color:rgba(255,255,255,0.5);">What do you do?</label>
+              <select
+                name="role"
+                class="w-full text-sm px-4 py-3.5 rounded-xl text-white focus:outline-none transition-colors appearance-none"
+                style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.6);">
+                <option value="" style="background:#050b14;">Select your role</option>
+                <option value="consultant" style="background:#050b14;">Consultant / Advisor</option>
+                <option value="analyst" style="background:#050b14;">Analyst / Researcher</option>
+                <option value="founder" style="background:#050b14;">Founder / Solopreneur</option>
+                <option value="developer" style="background:#050b14;">Developer / Engineer</option>
+                <option value="other" style="background:#050b14;">Other</option>
+              </select>
+            </div>
+            <button type="submit" class="cta-btn w-full text-white px-8 py-4 rounded-xl font-medium text-sm">
+              Reserve a seat
+            </button>
+          </form>
+          <p id="form-msg" class="mt-4 text-sm hidden text-center" style="color:#34d399;">Seat reserved. Watch your inbox for the next batch.</p>
+          <p class="mt-4 text-xs text-center" style="color:rgba(255,255,255,0.12);">One email per batch update. Zero junk. Cancel whenever.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="border-t py-12" style="border-color:rgba(255,255,255,0.05);">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <div class="flex items-center gap-2">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="3" fill="#14b8a6"/>
+            <path d="M12 15c0 2.5-1.5 4.5-4 5" stroke="#14b8a6" stroke-width="1.8" stroke-linecap="round" opacity="0.7"/>
+            <path d="M12 15c0 2.5 1.5 4.5 4 5" stroke="#06b6d4" stroke-width="1.8" stroke-linecap="round" opacity="0.7"/>
+            <path d="M12 9c0-2.5-1.5-4.5-4-5" stroke="#14b8a6" stroke-width="1.8" stroke-linecap="round" opacity="0.7"/>
+            <path d="M12 9c0-2.5 1.5-4.5 4-5" stroke="#06b6d4" stroke-width="1.8" stroke-linecap="round" opacity="0.7"/>
+          </svg>
+          <span class="text-sm font-medium" style="color:rgba(255,255,255,0.7);">octopus.ai</span>
+        </div>
+        <div class="flex flex-wrap items-center gap-6 text-xs" style="color:rgba(255,255,255,0.35);">
+          <a href="#how" class="hover:text-white transition-colors">How it works</a>
+          <a href="#features" class="hover:text-white transition-colors">Features</a>
+          <a href="#privacy" class="hover:text-white transition-colors">Privacy</a>
+          <a href="#waitlist" class="hover:text-white transition-colors">Waitlist</a>
+          <span class="hidden md:inline" style="color:rgba(255,255,255,0.15);">|</span>
+          <span style="color:rgba(255,255,255,0.25);">© 2025 octopus.ai</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Scroll fade-in
+    if (window.location.hash) {
+      history.replaceState(null, '', window.location.pathname);
+      window.scrollTo(0, 0);
+    }
+
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.fade-in').forEach(el => obs.observe(el));
+
+    // Use case tabs
+    function showUC(idx) {
+      document.querySelectorAll('.uc-tab').forEach(t => t.classList.remove('uc-tab-active'));
+      document.querySelectorAll('.uc-panel').forEach(p => p.classList.add('hidden'));
+      document.querySelector('.uc-tab[data-idx="' + idx + '"]').classList.add('uc-tab-active');
+      document.querySelector('.uc-panel[data-idx="' + idx + '"]').classList.remove('hidden');
+    }
+
+    // Hero background graph
+    (function () {
+      const canvas = document.getElementById('graph-canvas');
+      const ctx = canvas.getContext('2d');
+      let W, H, nodes;
+
+      function resize() {
+        W = canvas.width = canvas.offsetWidth;
+        H = canvas.height = canvas.offsetHeight;
+      }
+
+      function init() {
+        nodes = Array.from({ length: 90 }, () => ({
+          x: Math.random() * W,
+          y: Math.random() * H,
+          vx: (Math.random() - 0.5) * 0.55,
+          vy: (Math.random() - 0.5) * 0.55,
+          r: Math.random() * 2.5 + 0.8,
+          hue: Math.random() > 0.6 ? 170 : (Math.random() > 0.4 ? 190 : 25), // teal, cyan, or warm orange
+        }));
+      }
+
+      function draw() {
+        ctx.fillStyle = 'rgba(5, 11, 20, 0.25)';
+        ctx.fillRect(0, 0, W, H);
+        for (let i = 0; i < nodes.length; i++) {
+          for (let j = i + 1; j < nodes.length; j++) {
+            const dx = nodes[i].x - nodes[j].x;
+            const dy = nodes[i].y - nodes[j].y;
+            const d = Math.sqrt(dx * dx + dy * dy);
+            if (d < 120) {
+              const alpha = 0.12 * (1 - d / 120);
+              ctx.beginPath();
+              ctx.moveTo(nodes[i].x, nodes[i].y);
+              ctx.lineTo(nodes[j].x, nodes[j].y);
+              ctx.strokeStyle = `hsla(${nodes[i].hue}, 80%, 60%, ${alpha})`;
+              ctx.lineWidth = 0.6;
+              ctx.stroke();
+            }
+          }
+        }
+        nodes.forEach(n => {
+          ctx.beginPath();
+          ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+          ctx.fillStyle = `hsla(${n.hue}, 80%, 65%, 0.5)`;
+          ctx.fill();
+          n.x += n.vx; n.y += n.vy;
+          if (n.x < 0 || n.x > W) n.vx *= -1;
+          if (n.y < 0 || n.y > H) n.vy *= -1;
+        });
+        requestAnimationFrame(draw);
+      }
+
+      resize(); init(); draw();
+      window.addEventListener('resize', () => { resize(); init(); });
+    })();
+
+    // Mini graph in mockup
+    (function () {
+      const canvas = document.getElementById('mini-graph');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      let W, H;
+      const NODES = [
+        { label: 'Q3 call', color: '#2dd4bf', size: 7 },
+        { label: 'auth', color: '#fb923c', size: 6 },
+        { label: 'JWT', color: '#22d3ee', size: 5 },
+        { label: 'pdf', color: '#a78bfa', size: 5 },
+        { label: 'pricing', color: '#2dd4bf', size: 6 },
+        { label: 'tokens', color: '#22d3ee', size: 4 },
+        { label: 'login', color: '#fb923c', size: 4 },
+      ];
+      const EDGES = [[0,1],[0,4],[1,2],[1,6],[2,5],[3,4],[5,6]];
+      let basePos = [];
+      let t = 0;
+
+      function resize() {
+        W = canvas.width = canvas.offsetWidth;
+        H = canvas.height = canvas.offsetHeight;
+        basePos = [
+          { x: W * 0.22, y: H * 0.35 },
+          { x: W * 0.48, y: H * 0.28 },
+          { x: W * 0.72, y: H * 0.38 },
+          { x: W * 0.28, y: H * 0.68 },
+          { x: W * 0.52, y: H * 0.62 },
+          { x: W * 0.75, y: H * 0.55 },
+          { x: W * 0.55, y: H * 0.78 },
+        ];
+      }
+
+      function draw() {
+        ctx.clearRect(0, 0, W, H);
+        t += 0.012;
+        const pos = basePos.map((p, i) => ({
+          x: p.x + Math.sin(t * 0.6 + i * 1.2) * 6,
+          y: p.y + Math.cos(t * 0.8 + i * 0.9) * 5,
+        }));
+        EDGES.forEach(([a, b]) => {
+          ctx.beginPath();
+          ctx.moveTo(pos[a].x, pos[a].y);
+          ctx.lineTo(pos[b].x, pos[b].y);
+          ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+          ctx.lineWidth = 1.2;
+          ctx.stroke();
+        });
+        NODES.forEach((n, i) => {
+          const px = pos[i].x;
+          const py = pos[i].y;
+          // glow
+          const glow = ctx.createRadialGradient(px, py, 0, px, py, n.size * 3.5);
+          glow.addColorStop(0, n.color + '25');
+          glow.addColorStop(1, 'transparent');
+          ctx.beginPath();
+          ctx.arc(px, py, n.size * 3.5, 0, Math.PI * 2);
+          ctx.fillStyle = glow;
+          ctx.fill();
+          // node
+          ctx.beginPath();
+          ctx.arc(px, py, n.size, 0, Math.PI * 2);
+          ctx.fillStyle = n.color + 'cc';
+          ctx.fill();
+          // label
+          ctx.fillStyle = 'rgba(255,255,255,0.4)';
+          ctx.font = '9px Inter, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText(n.label, px, py + n.size + 10);
+        });
+        requestAnimationFrame(draw);
+      }
+
+      resize(); draw();
+      window.addEventListener('resize', resize);
+    })();
+
+    // Typing animation
+    const QUERIES = [
+      'Run my DD playbook on this cap table',
+      'Write a proposal using my winning framework',
+      'Review this Rust PR against my rules',
+      'Which Skill generated revenue this month?',
+    ];
+    let qi = 0, ci = 0, deleting = false;
+    const qEl = document.getElementById('query-text');
+
+    function typeLoop() {
+      const q = QUERIES[qi];
+      if (!deleting) {
+        qEl.textContent = q.slice(0, ci++);
+        if (ci > q.length) { deleting = true; setTimeout(typeLoop, 2200); return; }
+        setTimeout(typeLoop, 42);
+      } else {
+        qEl.textContent = q.slice(0, ci--);
+        if (ci < 0) { deleting = false; qi = (qi + 1) % QUERIES.length; ci = 0; setTimeout(typeLoop, 350); return; }
+        setTimeout(typeLoop, 20);
+      }
+    }
+    typeLoop();
+
+    // Results animation
+    const lines = document.querySelectorAll('.result-line');
+    let shown = 0;
+    function showLine() {
+      if (shown < lines.length) {
+        lines[shown].classList.add('show');
+        shown++;
+        setTimeout(showLine, 750);
+      } else {
+        setTimeout(() => {
+          lines.forEach(l => l.classList.remove('show'));
+          shown = 0;
+          setTimeout(showLine, 500);
+        }, 3200);
+      }
+    }
+    setTimeout(showLine, 1800);
+
+    async function handleSubmit(e) {
+      e.preventDefault();
+      const form = e.target;
+      const data = new FormData(form);
+      try {
+        const res = await fetch(form.action, {
+          method: 'POST',
+          body: data,
+          headers: { 'Accept': 'application/json' }
+        });
+        if (res.ok) {
+          document.getElementById('form-msg').classList.remove('hidden');
+          form.reset();
+        } else {
+          document.getElementById('form-msg').textContent = 'Something went wrong. Please try again.';
+          document.getElementById('form-msg').style.color = '#f87171';
+          document.getElementById('form-msg').classList.remove('hidden');
+        }
+      } catch (err) {
+        document.getElementById('form-msg').textContent = 'Something went wrong. Please try again.';
+        document.getElementById('form-msg').style.color = '#f87171';
+        document.getElementById('form-msg').classList.remove('hidden');
+      }
+    }
+  </script>
+</body>
+</html>
